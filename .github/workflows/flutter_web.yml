@@ -24,8 +24,16 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Create .env file
+        run: |
+          echo "API_URL=${{ secrets.API_URL }}" > .env
+          echo "ENVIRONMENT=${{ secrets.ENVIRONMENT }}" >> .env
+
       - name: Build Web
-        run: flutter build web --release
+        run: |
+          flutter build web --release \
+            --dart-define=API_URL="${{ secrets.API_URL }}" \
+            --dart-define=ENVIRONMENT="${{ secrets.ENVIRONMENT }}"
 
       - name: Upload Web Build Artifact
         uses: actions/upload-artifact@v4
